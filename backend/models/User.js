@@ -21,20 +21,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
-    verifyOtp: {
-      type: String,
-      default: "",
-    },
-    verifyOtpExpiredAt: {
-      type: Number,
-      default: 0,
-    },
-    isAccountVerified: {
-      type: Boolean,
-      default: false,
-    },
+   
   },
   { timestamps: true }
 );
