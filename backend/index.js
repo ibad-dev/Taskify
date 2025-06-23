@@ -1,28 +1,30 @@
-import { dbConnect } from "./db/index.js";
-import express, { urlencoded } from "express";
+import express from "express";
 import dotenv from "dotenv";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
+import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { dbConnect } from "./db/index.js";
 
-const app = express();
+// Import Routes
+import healthCheckRouter from "./routes/healthCheck.route.js";
+import UserRouter from "./routes/user.route.js";
+
 dotenv.config();
-const port = process.env.PORT;
+const app = express();
+const port = process.env.PORT || 8000;
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 50,
-  message: "Too many requests made from this IP, Please try again later 🙂",
-});
-
-//Security Middlewares:
+// ✅ Security Middlewares
 app.use(helmet());
-app.use("/api", limiter);
-app.use(mongoSanitize());
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 50,
+    message: "Too many requests made from this IP. Please try again later 🙂",
+  })
+);
 
-// CORS Configuration:
+// ✅ CORS Setup
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173",
@@ -30,24 +32,25 @@ app.use(
   })
 );
 
-// Body Parser middlewares:
-app.use(urlencoded());
-app.use(express.static("/public"));
+// ✅ Body Parsing Middleware (most important!)
+app.use(express.json()); // <-- this is what was missing!
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-//API  Routes:
-import healthCheckRouter from "./routes/healthCheck.route.js";
+// ✅ Static Files (if needed)
+app.use(express.static("public")); // "public", not "/public"
 
-// Routes:
+// ✅ Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
+app.use("/api/v1/users", UserRouter);
 
+// ✅ DB + Server
 dbConnect()
   .then(() => {
     app.listen(port, () => {
-      console.log(`Server Is Running on PORT: ${port}..........`);
+      console.log(`🚀 Server running on PORT ${port}`);
     });
   })
   .catch((err) => {
-    console.log("DB Connection Error", err);
+    console.error("❌ DB Connection Error:", err);
   });
