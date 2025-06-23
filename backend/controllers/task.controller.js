@@ -7,18 +7,16 @@ import Task from "../models/Tasks.js";
 const createTask = asyncHandler(async (req, res) => {
   const { name, description, state } = req.body;
 
-
-  if (!name ) {
+  if (!name) {
     throw new ApiError(400, "Task name is required");
   }
-
 
   const user = await User.findById(req.user._id);
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  
+  // 1. Create the task
   const task = await Task.create({
     name: name.trim(),
     description: description?.trim() || "",
@@ -26,7 +24,10 @@ const createTask = asyncHandler(async (req, res) => {
     owner: user._id,
   });
 
- 
+  // 2. Push task ID to user's tasks array
+  user.tasks.push(task._id);
+  await user.save(); // ✅ Important
+
   return res
     .status(201)
     .json(new ApiResponse(201, task, "Task created successfully"));
@@ -53,10 +54,19 @@ const updateTask = asyncHandler(async (req, res) => {
 
 
 const deleteTask = asyncHandler(async (req, res) => {
-  const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
+  const task = await Task.findOneAndDelete({
+    _id: req.params.id,
+    owner: req.user._id,
+  });
+
   if (!task) {
     throw new ApiError(404, "Task not found");
   }
+
+  // Remove task._id from user's tasks array
+  await User.findByIdAndUpdate(req.user._id, {
+    $pull: { tasks: task._id },
+  });
 
   return res
     .status(200)
