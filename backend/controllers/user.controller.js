@@ -73,4 +73,14 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, 'User logged out successfully'));
 });
 
-export { registerUser, loginUser, logoutUser };
+// controllers/user.controller.js
+ const getUserProfile = asyncHandler((req, res) => {
+  try {
+    return res.status(200).json({ data: req.user });
+  } catch (error) {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+})
+
+
+export { registerUser, loginUser, logoutUser ,getUserProfile};
