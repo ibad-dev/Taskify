@@ -11,5 +11,5 @@ const router = Router();
 router.route("/create-user").post(registerUser);
 router.route("/login-user").post(loginUser);
 router.route("/logout-user").post(isAuthenticated, logoutUser);
-router.route("/get-user-profile").post(isAuthenticated, getUserProfile);
+router.route("/get-user-profile").get(isAuthenticated, getUserProfile);
 export default router;
