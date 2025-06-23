@@ -94,19 +94,19 @@ function Dashboard() {
   console.log("🔍 Dashboard render: user:", user, "| tasks:", tasks);
 
   return (
-    <div className="text-white bg-zinc-900 min-h-screen px-4 pt-6">
+    <div className="text-white bg-zinc-900 min-h-screen px-2 lg:px-4 lg:pt-6">
       <div className="flex justify-between shadow-lg p-3 items-center mb-6">
-        <h1 className="text-4xl font-bold">Taskify</h1>
+        <h1 className="lg:text-4xl text-2xl font-bold">Taskify</h1>
         <div className="flex gap-4">
           <button
             onClick={() => setShowModal(true)}
-            className="bg-blue-600 px-4 py-2 text-xl  cursor-pointer font-semibold rounded hover:bg-blue-700"
+            className="bg-blue-600 px-4 py-2 text-md lg:text-xl  cursor-pointer font-semibold rounded hover:bg-blue-700"
           >
             Create Task
           </button>
           <button
             onClick={logout}
-            className="bg-red-600 px-4 py-2 text-xl cursor-pointer  font-semibold rounded hover:bg-red-700"
+            className="bg-red-600 px-4 py-2 text-md lg:text-xl cursor-pointer  font-semibold rounded hover:bg-red-700"
           >
             Logout
           </button>
