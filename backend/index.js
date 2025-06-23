@@ -9,6 +9,7 @@ import { dbConnect } from "./db/index.js";
 // Import Routes
 import healthCheckRouter from "./routes/healthCheck.route.js";
 import UserRouter from "./routes/user.route.js";
+import TaskRouter from "./routes/tasks.route.js";
 
 dotenv.config();
 const app = express();
@@ -43,6 +44,7 @@ app.use(express.static("public")); // "public", not "/public"
 // ✅ Routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
 app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/tasks", TaskRouter);
 
 // ✅ DB + Server
 dbConnect()
