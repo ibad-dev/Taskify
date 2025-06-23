@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+      select: false,
       required: true,
     },
     email: {
@@ -21,7 +22,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
-   
   },
   { timestamps: true }
 );
