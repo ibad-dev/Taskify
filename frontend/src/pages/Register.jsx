@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; // ✅ also import this
-
+import axios from "axios";
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -24,13 +24,13 @@ const Register = () => {
           withCredentials: true,
         }
       );
-
+console.log("RES OF REGISTRATION:",res)
       toast.success("Registered Successfully"); // ✅ fixed spelling
       setFormData({ fullName: "", email: "", password: "" });
       navigate("/login"); // ✅ this now works
     } catch (err) {
       toast.error("Something went wrong");
-      console.error(err);
+      console.log(err);
     }
   };
 
