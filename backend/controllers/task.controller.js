@@ -52,7 +52,6 @@ const updateTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, task, "Task updated successfully"));
 });
 
-
 const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findOneAndDelete({
     _id: req.params.id,
@@ -74,45 +73,18 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const getAllTasks = asyncHandler(async (req, res) => {
-  const { search = "", state, sort = "createdAt", order = "desc", page = 1, limit = 10 } = req.query;
-
-  const query = {
-    owner: req.user._id,
-  };
-
-  // Optional search
-  if (search) {
-    query.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { description: { $regex: search, $options: "i" } },
-    ];
-  }
-
-  // Optional filter by state
-  if (state && ["Pending", "Active", "Finished"].includes(state)) {
-    query.state = state;
-  }
-
-  const skip = (Number(page) - 1) * Number(limit);
-  const sortOrder = order === "asc" ? 1 : -1;
-
-  const tasks = await Task.find(query)
-    .sort({ [sort]: sortOrder })
-    .skip(skip)
-    .limit(Number(limit));
-
-  const total = await Task.countDocuments(query);
+  const tasks = await Task.find({});
 
   return res.status(200).json(
-    new ApiResponse(200, {
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      tasks,
-    }, "Tasks fetched successfully")
+    new ApiResponse(
+      200,
+      {
+        tasks,
+      },
+      "Tasks fetched successfully"
+    )
   );
 });
-
 
 const getTaskById = asyncHandler(async (req, res) => {
   const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
@@ -124,10 +96,4 @@ const getTaskById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, task, "Task fetched successfully"));
 });
 
-
-
-export {  createTask,
-  getAllTasks,
-  getTaskById,
-  updateTask,
-  deleteTask, };
+export { createTask, getAllTasks, getTaskById, updateTask, deleteTask };
